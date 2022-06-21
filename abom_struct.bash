@@ -6,6 +6,10 @@
 # Empty keys cause undefined behavior. Empty values are not supported; setting
 # an empty value deletes its key.
 
+# make_struct builds a new struct as a string and and echoes it. Pass it
+# alternating keys and values.
+#
+# my_struct=$(make_struct key1 val1 key2 val2)
 make_struct() {
   local s=""
   local argct=$#
@@ -25,6 +29,10 @@ make_struct() {
   echo "$s"
 }
 
+# struct_get looks up the value for a key in a struct and echoes it. Pass it the
+# struct and the key. If the key is not present, an empty string is echoed.
+#
+# value=$(struct_get "$my_struct" key1) # val1
 struct_get() {
   local s=$1
   local k=$2
@@ -45,6 +53,13 @@ struct_get() {
   fi
 }
 
+# struct_set sets a value for a key in a struct and echoes the new struct. Pass
+# it the struct, key, and value. If the key is present in the struct, its old
+# value is replaced; otherwise, it is added. If the value is empty, the key is
+# removed from the struct. Remember to store the output from this function as
+# the new struct.
+#
+# my_struct=$(struct_set "$my_struct" key3 val3)
 struct_set() {
   local s=$1
   local k=$2
@@ -78,6 +93,11 @@ struct_set() {
   make_struct "${news[@]}"
 }
 
+# struct_del deletes a key from a struct and echoes the new struct. Pass it the
+# struct and key. This is a convenience function for calling struct_set with an
+# empty value.
+#
+# my_struct=$(struct_del "$my_struct" key3)
 struct_del() {
   local s=$1
   local k=$2
