@@ -193,7 +193,6 @@ abom_render_text_input() {
   local len=$(struct_get "$el" len)
   local content=$(struct_get "$el" content)
   local num_blanks=$(( len - ${#content} ))
-  echo "num_blanks $num_blanks"
   local blanks=$(printf "%*s" "$num_blanks" "")
   blanks=${blanks// /_}
   local label=$(struct_get "$el" label)
