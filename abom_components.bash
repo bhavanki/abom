@@ -178,6 +178,64 @@ abom_render_button() {
   fi
 }
 
+abom_make_number_input() {
+  # label=x;min=x;max=x;len=x;content=x
+  local label=$1
+  local min=$2
+  local max=$3
+  local content=${4:-}
+  local len=${#max}
+  make_struct label "$label" min "$min" max "$max" len "$len" content "$content"
+}
+
+abom_modify_number_input() {
+  local el=$1
+  local key=$2
+  local min=$(struct_get "$el" min)
+  local max=$(struct_get "$el" max)
+  local content=$(struct_get "$el" content)
+  case $key in
+    _up|+)
+      if [[ -z $content ]]; then
+        content=$min
+      else
+        content=$(( content + 1 ))
+        if (( content > max )); then
+          content=$max
+        fi
+      fi
+      ;;
+    _down|-)
+      if [[ -z $content ]]; then
+        content=$max
+      else
+        content=$(( content - 1 ))
+        if (( content < min)); then
+          content=$min
+        fi
+      fi
+      ;;
+  esac
+
+  struct_set "$el" content "$content"
+}
+
+abom_get_content_number_input() {
+  local el=$1
+  struct_get "$el" content
+}
+
+abom_render_number_input() {
+  local el=$1
+  local show_cursor=${2:-false}
+
+  local cursor=$(_abom_get_cursor "$show_cursor")
+  local content=$(struct_get "$el" content)
+  local label=$(struct_get "$el" label)
+  local len=$(struct_get "$el" len)
+  printf "%s %s %${len}s ↕" "$cursor" "$label" "$content"
+}
+
 abom_make_text_input() {
   # label=x;len=x;content=x
   local label=$1
