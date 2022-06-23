@@ -160,6 +160,24 @@ abom_render_checkbox() {
   printf "%s [%s] %s" "$cursor" "$icon" "$label"
 }
 
+abom_make_button() {
+  # label=x
+  local label=$1
+  make_struct label "$label"
+}
+
+abom_render_button() {
+  local el=$1
+  local show_cursor=${2:-false}
+
+  local cursor=$(_abom_get_cursor "$show_cursor")
+  local label=$(struct_get "$el" label)
+  printf "%s 「 %s 」" "$cursor" "$label"
+  if [[ $show_cursor == true ]]; then
+    printf " <"
+  fi
+}
+
 abom_make_text_input() {
   # label=x;len=x;content=x
   local label=$1
