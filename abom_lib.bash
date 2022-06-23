@@ -150,6 +150,7 @@ abom_init() {
   hide_cursor
 
   TUI_LINES=$lines
+  local i
   for (( i = 0; i < TUI_LINES; i++ )); do
     echo
   done
@@ -165,6 +166,7 @@ abom_clear() {
     return
   fi
 
+  local i
   for (( i = 0; i < TUI_LINES; i++ )); do
     delete_to_eol
     next_line_start
@@ -192,6 +194,7 @@ abom_render() {
   curr_pos=$(get_cursor_pos)
   local diff_lines
   diff_lines=$(( $(get_line_from_pos "${curr_pos}") - root_line ))
+  local i
   for (( i = 0; i < TUI_LINES - diff_lines; i++ )); do
     delete_to_eol
     next_line_start

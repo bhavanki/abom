@@ -374,6 +374,7 @@ abom_render_progress() {
   local pct=$(struct_get "$el" pct)
 
   local bar_len=$(( pct * len / 100 ))
+  local i
   for (( i = 0; i < len; i++ )); do
     if (( i < bar_len )); then
       printf '█'

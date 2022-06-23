@@ -13,6 +13,7 @@
 make_struct() {
   local s=""
   local argct=$#
+  local i
   for (( i = 0; i < argct; i += 2 )); do
     local key=$1
     local value=$2
