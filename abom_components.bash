@@ -148,13 +148,13 @@ abom_is_selected_checkbox() {
 
 abom_render_checkbox() {
   local el=$1
-  local show_cursor=${3:-false}
+  local show_cursor=${2:-false}
 
   local cursor=$(_abom_get_cursor "$show_cursor")
   local icon=" "
   local selected=$(struct_get "$el" selected)
   if [[ $selected == 1 ]]; then
-    icon="x"
+    icon="✓"
   fi
   local label=$(struct_get "$el" label)
   printf "%s [%s] %s" "$cursor" "$icon" "$label"
