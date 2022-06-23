@@ -48,6 +48,7 @@ abom supplies a number of reusable UI _components_. The spinner is one of them. 
 * `amod_make_xyz` creates a new component. This function usually takes arguments to describe the component's initial state. Some of these values are modified over the lifetime of the component.
 * `amod_render_xyz` produces the string form of the component, based on its current state. This string is what gets included in the TUI content.
 * One or more additional functions modify the component's state. The functions available depend on the component. For example, the spinner has `amod_tick_spinner` which causes the spinner's internal counter to advance by one.
+* One or more additional additional functions retrieve the component's state. The functions available depend on the component. For example, the text input (described below) has `abom_get_content_text_input` to get the text currently stored in the component.
 
 You don't have to use any components in a TUI, but they are designed to mimic those in graphical UIs.
 
@@ -55,13 +56,15 @@ You don't have to use any components in a TUI, but they are designed to mimic th
 
 bash doesn't natively support a typical struct/object data structure very well (associative arrays notwithstanding). abom rolls its own support that encodes a struct into a string. So, each abom component is a string, and the framework knows how to work with struct fields in the string - that is, it knows how to treat such a string as a struct.
 
-See [abom_struct.bash](abom_struct.sh) to learn how structs work. You are free to use them for your own components, or other purposes.
+See [abom_struct.bash](abom_struct.sh) to learn how structs work. You are free to use them for your own components, or other purposes. Normally, you won't have to deal with components at the struct level, but instead use the more convenient component functions that manipulate struct data under the hood.
 
 ## Example 2: Text input
 
 [example_text_input.sh](examples/example_text_input.sh) gets the answer to a question using a text input component. Once the user enters a newline, the TUI closes and the script retrieves the text content.
 
 The `amod_modify_text_input` function updates the text input component based on the key that was entered. For example, the component content may get a new character added to it, or removed from it.
+
+The `amod_get_content_text_input` function gets the text stored in the text input component.
 
 ## Keys
 

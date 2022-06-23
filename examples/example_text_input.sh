@@ -23,4 +23,4 @@ done
 
 abom_close
 
-echo "Your favorite robot is $(struct_get "$text_input" content)"
+echo "Your favorite robot is $(abom_get_content_text_input "$text_input")"

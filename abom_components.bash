@@ -100,6 +100,15 @@ abom_toggle_radio() {
   struct_set "$el" selected "$selected"
 }
 
+abom_is_selected_radio() {
+  local el=$1
+  local selected=$(struct_get "$el" selected)
+  if [[ $selected == 1 ]]; then
+    return 0
+  fi
+  return 1
+}
+
 abom_render_radio() {
   local el=$1
   local show_cursor=${2:-false}
@@ -126,6 +135,15 @@ abom_toggle_checkbox() {
   local selected=$(struct_get "$el" selected)
   selected=$(( (selected + 1) % 2 ))
   struct_set "$el" selected "$selected"
+}
+
+abom_is_selected_checkbox() {
+  local el=$1
+  local selected=$(struct_get "$el" selected)
+  if [[ $selected == 1 ]]; then
+    return 0
+  fi
+  return 1
 }
 
 abom_render_checkbox() {
@@ -185,6 +203,11 @@ abom_modify_text_input() {
   struct_set "$el" content "$newcontent"
 }
 
+abom_get_content_text_input() {
+  local el=$1
+  struct_get "$el" content
+}
+
 abom_render_text_input() {
   local el=$1
   local show_cursor=${2:-false}
@@ -236,6 +259,14 @@ abom_modify_select() {
   fi
 
   struct_set "$el" selected "$selected"
+}
+
+abom_get_selected_item_select() {
+  local el=$1
+
+  local selected=$(struct_get "$el" selected)
+  local key=$(printf "c%03d" "$selected")
+  struct_get "$el" "$key"
 }
 
 abom_render_select() {
