@@ -17,9 +17,19 @@ get_cursor_pos() {
   # shellcheck disable=SC2034
   read -p $'\e[6n' -r -s -d R pos
   # keysmash protection
-  while [[ ${pos:0:1} != $'\e' ]]; do
-    pos=${pos:1}
+  local pos_regex="^[0-9]+.[0-9]+"
+  while true; do
+    if [[ ${pos:0:1} != $'\e' ]]; then
+      pos=${pos:1}
+      continue
+    fi
+    if [[ ! ${pos:2} =~ $pos_regex ]]; then
+      pos=${pos:1}
+      continue
+    fi
+    break
   done
+
   local len=$((${#pos} - 2))
   echo "${pos:2:$len}"
 }
