@@ -76,6 +76,10 @@ abom_default() {
   printf '\e[0m'
 }
 
+abom_reverse() {
+  printf '\e[7m'
+}
+
 _abom_get_cursor() {
   local show=${1:-false}
 
@@ -237,11 +241,12 @@ abom_render_number_input() {
 }
 
 abom_make_text_input() {
-  # label=x;len=x;content=x
+  # label=x;len=x;content=x;pos=x
   local label=$1
   local len=$2
   local content=${3:-}
-  make_struct label "$label" len "$len" content "$content"
+  local pos=${#content}
+  make_struct label "$label" len "$len" content "$content" pos "$pos"
 }
 
 abom_modify_text_input() {
@@ -249,20 +254,44 @@ abom_modify_text_input() {
   local key=$2
   local content=$(struct_get "$el" content)
   local len=$(struct_get "$el" len)
+  local pos=$(struct_get "$el" pos)
   local contentlen=${#content}
   local newcontent=$content
+  local newpos=$pos
   case $key in
     _*)
       case $key in
-        _bs)
-          if (( contentlen > 0 )); then
-            newlen=$((contentlen - 1))
-            newcontent="${content:0:$newlen}"
+        _del)
+          if (( contentlen > 0 && pos < len)); then
+            newcontent="${content:0:${pos}}${content:$((pos + 1))}"
           fi
+          ;;
+        _bs)
+          if (( contentlen > 0 && pos > 0)); then
+            newcontent="${content:0:$((pos - 1))}${content:${pos}}"
+            newpos=$((pos - 1))
+          fi
+          ;;
+        _left)
+          if (( pos > 0 )); then
+            newpos=$((pos - 1))
+          fi
+          ;;
+        _right)
+          if (( pos < contentlen )); then
+            newpos=$((pos + 1))
+          fi
+          ;;
+        _home)
+          newpos=0
+          ;;
+        _end)
+          newpos=${len}
           ;;
         _)
           if (( contentlen < len )); then
-            newcontent="${content}_"
+            newcontent="${content:0:${pos}}_${content:${pos}}"
+            newpos=$((pos + 1))
           fi
           ;;
         *)
@@ -271,12 +300,13 @@ abom_modify_text_input() {
       ;;
     *)
       if (( contentlen < len )); then
-        newcontent="${content}${key}"
+        newcontent="${content:0:${pos}}${key}${content:${pos}}"
+        newpos=$((pos + 1))
       fi
       ;;
   esac
 
-  struct_set "$el" content "$newcontent"
+  struct_set "$(struct_set "$el" content "$newcontent")" pos "$newpos"
 }
 
 abom_get_content_text_input() {
@@ -291,11 +321,28 @@ abom_render_text_input() {
   local cursor=$(_abom_get_cursor "$show_cursor")
   local len=$(struct_get "$el" len)
   local content=$(struct_get "$el" content)
+  local pos=$(struct_get "$el" pos)
+
+  local content_with_pos
+  local c
+  for (( i = 0; i < ${#content}; i++ )); do
+    if (( i == pos )); then
+      c="$(abom_reverse)${content:i:1}$(abom_default)"
+    else
+      c=${content:i:1}
+    fi
+    content_with_pos="${content_with_pos}${c}"
+  done
+
   local num_blanks=$(( len - ${#content} ))
   local blanks=$(printf "%*s" "$num_blanks" "")
   blanks=${blanks// /_}
+  if (( pos == "${#content}" && ${#blanks} > 0 )); then
+    blanks="$(abom_reverse)_$(abom_default)${blanks:1}"
+  fi
+
   local label=$(struct_get "$el" label)
-  printf "%s %s %s%s" "$cursor" "$label" "$content" "$blanks"
+  printf "%s %s %s%s" "$cursor" "$label" "$content_with_pos" "$blanks"
 }
 
 abom_make_select() {
