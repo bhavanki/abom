@@ -96,6 +96,13 @@ At this time, abom does not support key presses with control, alt, or command, n
 
 **more to come**
 
+## Handy References
+
+* [Writing a TUI in Bash](https://github.com/dylanaraps/writing-a-tui-in-bash)
+* [VT510 Video Terminal Programmer Information](https://vt100.net/docs/vt510-rm/contents.html)
+* [Gavenkoa Tips: VT100](https://gavenkoa-tips.readthedocs.io/en/latest/vt100.html)
+* [List of ANSI Color Escape Sequences](https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences)
+
 ## License
 
 [MIT](LICENSE.md)
